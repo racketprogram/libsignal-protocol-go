@@ -1,12 +1,13 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/RadicalApp/libsignal-protocol-go/keys/message"
 	"github.com/RadicalApp/libsignal-protocol-go/keys/prekey"
 	"github.com/RadicalApp/libsignal-protocol-go/logger"
 	"github.com/RadicalApp/libsignal-protocol-go/protocol"
 	"github.com/RadicalApp/libsignal-protocol-go/session"
-	"testing"
 )
 
 // TestSavedMessageKeys tests the ability to save message keys for use in
@@ -50,19 +51,19 @@ func TestSavedMessageKeys(t *testing.T) {
 	plaintextMessage := []byte("Hello!")
 	logger.Info("Plaintext message: ", string(plaintextMessage))
 	sessionCipher := session.NewCipher(alice.sessionBuilder, bob.address)
-	message, err := sessionCipher.Encrypt(plaintextMessage)
+	encryptedMessage, err := sessionCipher.Encrypt(plaintextMessage)
 	if err != nil {
 		logger.Error("Unable to encrypt message: ", err)
 		t.FailNow()
 	}
 
-	logger.Info("Encrypted message: ", message)
+	logger.Info("Encrypted message: ", encryptedMessage)
 
 	///////////// RECEIVER SESSION CREATION ///////////////
 
 	// Emulate receiving the message as JSON over the network.
 	logger.Debug("Building message from bytes on Bob's end.")
-	receivedMessage, err := protocol.NewPreKeySignalMessageFromBytes(message.Serialize(), serializer.PreKeySignalMessage, serializer.SignalMessage)
+	receivedMessage, err := protocol.NewPreKeySignalMessageFromBytes(encryptedMessage.Serialize(), serializer.PreKeySignalMessage, serializer.SignalMessage)
 	if err != nil {
 		logger.Error("Unable to emulate receiving message as JSON: ", err)
 		t.FailNow()
@@ -72,7 +73,7 @@ func TestSavedMessageKeys(t *testing.T) {
 	logger.Debug("Building receiver's (Bob) session...")
 	unsignedPreKeyID, err := bob.sessionBuilder.Process(receivedMessage)
 	if err != nil {
-		logger.Error("Unable to process prekeysignal message: ", err)
+		logger.Error("Unable to process prekey signal message: ", err)
 		t.FailNow()
 	}
 	logger.Debug("Got PreKeyID: ", unsignedPreKeyID)
@@ -93,11 +94,11 @@ func TestSavedMessageKeys(t *testing.T) {
 	// Try using the message key to decrypt the message again.
 	logger.Info("Testing using saved message key to decrypt again.")
 	for i := 0; i < 10; i++ {
-		testDecryptingWithKey(bobSessionCipher, receivedMessage.WhisperMessage(), key, plaintextMessage, t)
+		testDecryptingWithKey(t, bobSessionCipher, key, receivedMessage.WhisperMessage(), plaintextMessage)
 	}
 }
 
-func testDecryptingWithKey(cipher *session.Cipher, receivedMessage *protocol.SignalMessage, key *message.Keys, plaintextMessage []byte, t *testing.T) {
+func testDecryptingWithKey(t *testing.T, cipher *session.Cipher, key *message.Keys, receivedMessage *protocol.SignalMessage, plaintextMessage []byte) {
 	msg, err := cipher.DecryptWithKey(receivedMessage, key)
 	if err != nil {
 		t.FailNow()

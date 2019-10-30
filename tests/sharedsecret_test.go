@@ -2,10 +2,11 @@ package tests
 
 import (
 	"encoding/base64"
+	"testing"
+
 	"github.com/RadicalApp/libsignal-protocol-go/ecc"
 	"github.com/RadicalApp/libsignal-protocol-go/kdf"
 	"github.com/RadicalApp/libsignal-protocol-go/logger"
-	"testing"
 )
 
 // TestSharedSecret tests the key derivation function's ability to
@@ -19,23 +20,25 @@ func TestSharedSecret(t *testing.T) {
 	aliceKeyPair, err := ecc.GenerateKeyPair()
 	if err != nil {
 		t.Error("Error generating identity keys")
+		return
 	}
 	alicePrivateKey := aliceKeyPair.PrivateKey().Serialize()
 	p := aliceKeyPair.PublicKey()
 	alicePublicKey := p.PublicKey()
-	logger.Info("  Alice PrivateKey: ", b64(alicePrivateKey[:]))
-	logger.Info("  Alice PublicKey: ", b64(alicePublicKey[:]))
+	logger.Info("Alice PrivateKey: ", b64(alicePrivateKey[:]))
+	logger.Info("Alice PublicKey: ", b64(alicePublicKey[:]))
 
 	// Generate an keypair for Bob
 	bobKeyPair, err := ecc.GenerateKeyPair()
 	if err != nil {
 		t.Error("Error generating identity keys")
+		return
 	}
 	bobPrivateKey := bobKeyPair.PrivateKey().Serialize()
 	p = bobKeyPair.PublicKey()
 	bobPublicKey := p.PublicKey()
-	logger.Info("  Bob PrivateKey: ", b64(bobPrivateKey[:]))
-	logger.Info("  Bob PublicKey: ", b64(bobPublicKey[:]))
+	logger.Info("Bob PrivateKey: ", b64(bobPrivateKey[:]))
+	logger.Info("Bob PublicKey: ", b64(bobPublicKey[:]))
 
 	// Calculate the shared secret as Alice.
 	aliceSharedSecret := kdf.CalculateSharedSecret(bobPublicKey, alicePrivateKey)

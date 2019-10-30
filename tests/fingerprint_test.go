@@ -2,8 +2,9 @@ package tests
 
 import (
 	"fmt"
-	"github.com/RadicalApp/libsignal-protocol-go/fingerprint"
 	"testing"
+
+	"github.com/RadicalApp/libsignal-protocol-go/fingerprint"
 )
 
 // TestFingerprint will test printing key fingerprints.
@@ -22,5 +23,4 @@ func TestFingerprint(t *testing.T) {
 	)
 
 	fmt.Println(fp.DisplayText())
-
 }

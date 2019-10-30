@@ -2,12 +2,13 @@ package tests
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/RadicalApp/libsignal-protocol-go/keys/prekey"
 	"github.com/RadicalApp/libsignal-protocol-go/logger"
 	"github.com/RadicalApp/libsignal-protocol-go/session"
 	"github.com/RadicalApp/libsignal-protocol-go/state/record"
 	"github.com/kr/pretty"
-	"testing"
 )
 
 // TestSerializing tests serialization and deserialization of Signal objects.
@@ -26,7 +27,7 @@ func TestSerializing(t *testing.T) {
 
 	// Create a PreKeyBundle from Bob's prekey records and other
 	// data.
-	retrivedPreKey := prekey.NewBundle(
+	retrievedPreKey := prekey.NewBundle(
 		bob.registrationID,
 		bob.deviceID,
 		bob.preKeys[0].ID(),
@@ -38,7 +39,7 @@ func TestSerializing(t *testing.T) {
 	)
 
 	// Process Bob's retrieved prekey to establish a session.
-	alice.sessionBuilder.ProcessBundle(retrivedPreKey)
+	alice.sessionBuilder.ProcessBundle(retrievedPreKey)
 
 	// Create a session cipher to encrypt messages to Bob.
 	plaintextMessage := []byte("Hello!")
@@ -59,5 +60,4 @@ func TestSerializing(t *testing.T) {
 
 	fmt.Printf("Original Session Record: %# v\n", pretty.Formatter(loadedSession))
 	fmt.Printf("Deserialized Session Record: %# v\n", pretty.Formatter(deserializedSession))
-
 }

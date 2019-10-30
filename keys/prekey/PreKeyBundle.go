@@ -1,5 +1,5 @@
 // Package prekey provides prekey bundle structures for calculating
-// a new Signal session with a user asyncronously.
+// a new Signal session with a user asynchronously.
 package prekey
 
 import (

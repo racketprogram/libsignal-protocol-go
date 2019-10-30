@@ -16,10 +16,10 @@ import (
 )
 
 // Define error constants used for error messages.
-const untrustedIdentityError string = "Untrusted identity"
-const noSignedPreKeyError string = "No signed prekey!"
-const invalidSignatureError string = "Invalid signature on device key!"
-const nilOneTimePreKeyError string = "Prekey store returned a nil one time prekey! Was the key already processed?"
+const untrustedIdentityError string = "untrusted identity"
+const noSignedPreKeyError string = "no signed prekey"
+const invalidSignatureError string = "invalid signature on device key"
+const nilOneTimePreKeyError string = "prekey store returned a nil one time prekey! Was the key already processed"
 
 // NewBuilder constructs a session builder.
 func NewBuilder(sessionStore store.Session, preKeyStore store.PreKey,

@@ -1,10 +1,11 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/RadicalApp/libsignal-protocol-go/logger"
 	"github.com/RadicalApp/libsignal-protocol-go/serialize"
 	"github.com/RadicalApp/libsignal-protocol-go/util/keyhelper"
-	"testing"
 )
 
 // TestPreKeys checks generating prekeys.
@@ -23,10 +24,16 @@ func TestPreKeys(t *testing.T) {
 	}
 
 	logger.Info("Generating prekeys")
-	preKeys, _ := keyhelper.GeneratePreKeys(1, 100, serializer.PreKeyRecord)
+	preKeys, err := keyhelper.GeneratePreKeys(1, 100, serializer.PreKeyRecord)
+	if err != nil {
+		t.Error(err)
+	}
 	logger.Info("Generated PreKeys: ", preKeys)
 
 	logger.Info("Generating Signed PreKey")
-	signedPreKey, _ := keyhelper.GenerateSignedPreKey(identityKeyPair, 1, serializer.SignedPreKeyRecord)
+	signedPreKey, err := keyhelper.GenerateSignedPreKey(identityKeyPair, 1, serializer.SignedPreKeyRecord)
+	if err != nil {
+		t.Error(err)
+	}
 	logger.Info("Signed PreKey: ", signedPreKey)
 }

@@ -140,8 +140,8 @@ func (i *InMemorySignedPreKey) LoadSignedPreKey(signedPreKeyID uint32) *record.S
 func (i *InMemorySignedPreKey) LoadSignedPreKeys() []*record.SignedPreKey {
 	var preKeys []*record.SignedPreKey
 
-	for _, record := range i.store {
-		preKeys = append(preKeys, record)
+	for _, key := range i.store {
+		preKeys = append(preKeys, key)
 	}
 
 	return preKeys

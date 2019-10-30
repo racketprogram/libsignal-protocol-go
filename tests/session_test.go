@@ -1,12 +1,13 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/RadicalApp/libsignal-protocol-go/keys/prekey"
 	"github.com/RadicalApp/libsignal-protocol-go/logger"
 	"github.com/RadicalApp/libsignal-protocol-go/protocol"
 	"github.com/RadicalApp/libsignal-protocol-go/serialize"
 	"github.com/RadicalApp/libsignal-protocol-go/session"
-	"testing"
 )
 
 // TestSessionBuilder checks building of a session.
@@ -117,8 +118,8 @@ func TestSessionBuilder(t *testing.T) {
 	}
 }
 
-// TestSessionRoundtrip checks sending messages back and forth from users.
-func TestSessionRoundtrip(t *testing.T) {
+// TestSessionRoundTrip checks sending messages back and forth from users.
+func TestSessionRoundTrip(t *testing.T) {
 
 	// Create a serializer object that will be used to encode/decode data.
 	serializer := newSerializer()
@@ -165,7 +166,7 @@ func TestSessionRoundtrip(t *testing.T) {
 	logger.Debug("Building receiver's (Bob) session...")
 	unsignedPreKeyID, err := bob.sessionBuilder.Process(aliceMessages1[0].(*protocol.PreKeySignalMessage))
 	if err != nil {
-		logger.Error("Unable to process prekeysignal message: ", err)
+		logger.Error("Unable to process prekey signal message: ", err)
 		t.FailNow()
 	}
 	logger.Debug("Got PreKeyID: ", unsignedPreKeyID)

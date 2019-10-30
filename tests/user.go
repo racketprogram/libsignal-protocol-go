@@ -73,23 +73,17 @@ func newUser(name string, deviceID uint32, serializer *serialize.Serializer) *us
 	signalUser.senderKeyStore = NewInMemorySenderKey()
 
 	// Put all our pre keys in our local stores.
-	for i := range signalUser.preKeys {
+	for _, key := range signalUser.preKeys {
 		signalUser.preKeyStore.StorePreKey(
-			signalUser.preKeys[i].ID().Value,
-			record.NewPreKey(signalUser.preKeys[i].ID().Value, signalUser.preKeys[i].KeyPair(), serializer.PreKeyRecord),
+			key.ID().Value,
+			key,
 		)
 	}
 
 	// Store our's own signed prekey
 	signalUser.signedPreKeyStore.StoreSignedPreKey(
 		signalUser.signedPreKey.ID(),
-		record.NewSignedPreKey(
-			signalUser.signedPreKey.ID(),
-			signalUser.signedPreKey.Timestamp(),
-			signalUser.signedPreKey.KeyPair(),
-			signalUser.signedPreKey.Signature(),
-			serializer.SignedPreKeyRecord,
-		),
+		signalUser.signedPreKey,
 	)
 
 	// Create a remote address that we'll be building our session with.

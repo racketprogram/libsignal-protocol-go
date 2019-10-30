@@ -1,12 +1,13 @@
 package tests
 
 import (
+	"sync"
+	"testing"
+
 	"github.com/RadicalApp/complete"
 	"github.com/RadicalApp/libsignal-protocol-go/ecc"
 	"github.com/RadicalApp/libsignal-protocol-go/logger"
 	"github.com/RadicalApp/libsignal-protocol-go/util/keyhelper"
-	"sync"
-	"testing"
 )
 
 // TestIdentityKeys checks generating, signing, and verifying of identity keys.
@@ -20,32 +21,32 @@ func TestIdentityKeys(t *testing.T) {
 	}
 	privateKey := identityKeyPair.PrivateKey()
 	publicKey := identityKeyPair.PublicKey()
-	logger.Info("  Identity KeyPair:", identityKeyPair)
+	logger.Info("Identity KeyPair:", identityKeyPair)
 
 	// Sign the text "Hello" with the identity key
 	message := []byte("Hello")
 	unsignedMessage := []byte("SHIT!")
 	logger.Info("Signing bytes:", message)
 	signature := ecc.CalculateSignature(privateKey, message)
-	logger.Info("  Signature:", signature)
+	logger.Info("Signature:", signature)
 
 	// Validate the signature using the private key
 	//valid := ecc.Verify(publicKey.PublicKey().PublicKey(), message, &signature)
 	logger.Info("Verifying signature against bytes:", message)
 	valid := ecc.VerifySignature(publicKey.PublicKey(), message, signature)
-	logger.Info("  Valid signature:", valid)
-	if !(valid) {
+	logger.Info("Valid signature:", valid)
+	if !valid {
 		t.Error("Signature verification failed.")
 	}
 
 	// Try checking the signature on text that is different
 	logger.Info("Verifying signature against unsigned bytes:", unsignedMessage)
 	valid = ecc.VerifySignature(publicKey.PublicKey(), unsignedMessage, signature)
-	logger.Info("  Valid signature:", valid)
+	logger.Info("Valid signature:", valid)
 	if valid {
 		t.Error("Signature verification should have failed here.")
+		return
 	}
-
 }
 
 // TestIdentityKeysAsync tries to test creation of identity keys in an async way.
@@ -70,10 +71,9 @@ func TestIdentityKeysAsync(t *testing.T) {
 		failure,
 	)
 
-	// Create identity keys asyncronously
+	// Create identity keys asynchronously
 	keyhelper.GenerateIdentityKeyPairAsync(completion)
 
 	// Wait for wg to call "Done()" method.
 	wg.Wait()
-
 }
